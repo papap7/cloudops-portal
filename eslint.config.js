@@ -19,4 +19,13 @@ export default defineConfig([
       globals: globals.browser,
     },
   },
+  {
+    // shadcn-generated files export a component and its variants helper from
+    // the same module. The rule only affects Fast Refresh in development, so
+    // it is disabled here instead of editing generated code.
+    files: ['src/components/ui/**/*.{ts,tsx}'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
 ])
