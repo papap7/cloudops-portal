@@ -34,6 +34,17 @@ function LoginPage() {
     loginMutation.mutate(values);
   };
 
+  // Optional read-only demo account for visitors (set both in Vercel to enable).
+  // The button stays hidden when either value is missing.
+  const demoEmail = import.meta.env.VITE_DEMO_EMAIL as string | undefined;
+  const demoPassword = import.meta.env.VITE_DEMO_PASSWORD as string | undefined;
+  const hasDemoAccount = Boolean(demoEmail && demoPassword);
+
+  const signInWithDemo = () => {
+    if (!demoEmail || !demoPassword) return;
+    loginMutation.mutate({ email: demoEmail, password: demoPassword });
+  };
+
   return (
     <div className="flex h-[calc(100vh-10rem)] items-center justify-center">
       <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-10 shadow-lg dark:border-gray-800 dark:bg-gray-900">
@@ -64,6 +75,21 @@ function LoginPage() {
           <Button type="submit" disabled={loginMutation.isPending} className="w-full mt-3 justify-center">
             {loginMutation.isPending ? "Signing in..." : "Log In"}
           </Button>
+
+          {hasDemoAccount && (
+            <div className="rounded-lg border border-dashed border-gray-300 p-3 text-center dark:border-gray-700">
+              <p className="text-sm text-gray-600 dark:text-gray-400">Just looking around?</p>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={signInWithDemo}
+                disabled={loginMutation.isPending}
+                className="mt-2 w-full justify-center"
+              >
+                Use demo account
+              </Button>
+            </div>
+          )}
 
           <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-4">
             Don't have an account?{" "}
