@@ -1,6 +1,6 @@
 # CloudOps Portal — Frontend Application (ITELECT4 GT4)
 
-[![CI](https://github.com/papap7/itelect4-project-paulot/actions/workflows/ci.yml/badge.svg)](https://github.com/papap7/itelect4-project-paulot/actions/workflows/ci.yml)
+[![CI](https://github.com/papap7/cloudops-portal/actions/workflows/ci.yml/badge.svg)](https://github.com/papap7/cloudops-portal/actions/workflows/ci.yml)
 
 Modern single-page application (SPA) for the CloudOps Infrastructure Provisioning and Workspace Management Portal.
 
@@ -8,7 +8,7 @@ Modern single-page application (SPA) for the CloudOps Infrastructure Provisionin
 
 - **Live Frontend App:** [https://cloudops-portal-tenorio.vercel.app](https://cloudops-portal-tenorio.vercel.app) (the earlier address, [itelect4-project-paulot.vercel.app](https://itelect4-project-paulot.vercel.app), still works)
 - **Live Backend API:** [https://itelect4-backend-sand.vercel.app](https://itelect4-backend-sand.vercel.app)
-- **Frontend GitHub Repo:** [https://github.com/papap7/itelect4-project-paulot](https://github.com/papap7/itelect4-project-paulot)
+- **Frontend GitHub Repo:** [https://github.com/papap7/cloudops-portal](https://github.com/papap7/cloudops-portal)
 - **Backend GitHub Repo:** [https://github.com/papap7/itelect4-backend](https://github.com/papap7/itelect4-backend)
 
 ### Trying the live app
@@ -74,8 +74,8 @@ flowchart LR
 
 1. **Clone repository:**
    ```bash
-   git clone https://github.com/papap7/itelect4-project-paulot.git
-   cd itelect4-project-paulot
+   git clone https://github.com/papap7/cloudops-portal.git
+   cd cloudops-portal
    ```
 2. **Install dependencies:**
    ```bash
@@ -117,3 +117,7 @@ Vitest tests, each beside the file it tests:
 - `src/pages/DashboardPage.test.tsx` — signed-out visitors see readable workspace dates and the dashboard never asks for protected requests.
 
 `.github/workflows/ci.yml` runs `npm run lint`, `npm test` and `npm run build` on every push. The badge at the top of this file shows the result of the latest run.
+
+## 🤖 AI assistance
+
+Parts of this project were built with help from Claude (Anthropic's AI assistant), which is why it appears under Contributors on the commits it co-authored.
