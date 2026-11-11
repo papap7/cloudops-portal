@@ -9,6 +9,19 @@ import type { Engineer, ApiWorkspace, ApiRequest } from "../types/index";
 import { mockEngineers } from "../data/mockData";
 import useUiStore from "../store/uiStore";
 import { fetchWorkspaces, fetchRequests } from "../api/client";
+import useAuthStore from "../store/authStore";
+import { formatDate } from "../lib/formatDate";
+
+// Shown in a metric card while its number is loading.
+function MetricSkeleton() {
+  return (
+    <span
+      role="status"
+      aria-label="Loading"
+      className="mt-3 block h-7 w-12 animate-pulse rounded bg-gray-200 dark:bg-gray-700"
+    />
+  );
+}
 
 function DashboardPage() {
   const [selectedEngineer, setSelectedEngineer] = useState<Engineer | null>(null);
@@ -18,9 +31,15 @@ function DashboardPage() {
     queryFn: fetchWorkspaces,
   });
 
+  // Provision requests are protected, so only ask for them when signed in.
+  // Otherwise every visit would make a request that ends in 401.
+  const token = useAuthStore((state) => state.token);
+  const isSignedIn = Boolean(token);
+
   const { data: requests = [], isPending: requestsPending } = useQuery<ApiRequest[]>({
-    queryKey: ["requests"],
+    queryKey: ["requests", token],
     queryFn: fetchRequests,
+    enabled: isSignedIn,
   });
   
   const latestRequest = requests.length > 0 ? requests[requests.length - 1] : null;
@@ -55,7 +74,11 @@ function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
           <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Workspaces</h3>
-          <p className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">{workspacesPending ? "-" : workspaces.length}</p>
+          {workspacesPending ? (
+            <MetricSkeleton />
+          ) : (
+            <p className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">{workspacesError ? "—" : workspaces.length}</p>
+          )}
         </div>
         <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
           <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Active Engineers</h3>
@@ -63,7 +86,13 @@ function DashboardPage() {
         </div>
         <div className="rounded-xl border border-blue-200 bg-blue-50 p-6 shadow-sm dark:border-blue-900/50 dark:bg-blue-900/20">
           <h3 className="text-sm font-medium text-blue-600 dark:text-blue-400">Pending Requests</h3>
-          <p className="mt-2 text-3xl font-bold text-blue-700 dark:text-blue-300">{requestsPending ? "-" : pendingRequestsCount}</p>
+          {!isSignedIn ? (
+            <p className="mt-3 text-sm text-blue-700 dark:text-blue-300">Log in to see your requests</p>
+          ) : requestsPending ? (
+            <MetricSkeleton />
+          ) : (
+            <p className="mt-2 text-3xl font-bold text-blue-700 dark:text-blue-300">{pendingRequestsCount}</p>
+          )}
         </div>
       </div>
 
@@ -95,6 +124,9 @@ function DashboardPage() {
                       </div>
                       <div className="h-2 bg-gray-200 rounded"></div>
                     </div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      Connecting to the API. The first load after a quiet period can take a few seconds.
+                    </p>
                   </div>
                 </div>
               ) : workspacesError ? (
@@ -147,9 +179,11 @@ function DashboardPage() {
             
             {showRequest && (
               <div className="p-6">
-                {latestRequest ? (
+                {!isSignedIn ? (
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Log in to see your latest request.</p>
+                ) : latestRequest ? (
                   <RequestBadge request={latestRequest}>
-                    <p className="text-xs mt-1 text-gray-500">Requested: {new Date(latestRequest.requestedAt).toLocaleDateString()}</p>
+                    <p className="text-xs mt-1 text-gray-500">Requested: {formatDate(latestRequest.requestedAt)}</p>
                   </RequestBadge>
                 ) : (
                   <p className="text-sm text-gray-500 dark:text-gray-400">No recent requests.</p>
