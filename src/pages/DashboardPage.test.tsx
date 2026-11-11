@@ -48,4 +48,18 @@ describe("DashboardPage", () => {
     expect(urls.some((url) => url.endsWith("/api/workspaces"))).toBe(true);
     expect(urls.some((url) => url.includes("/api/provision-requests"))).toBe(false);
   });
+
+  it("says plainly which parts are sample data and that nothing is provisioned", () => {
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(JSON.stringify([]), { status: 200 }),
+    );
+    renderDashboard();
+
+    expect(screen.getByRole("note")).toHaveTextContent(
+      /sample data.*nothing is created in a real cloud account/,
+    );
+    // The team card and its count are both marked, since they never
+    // come from the API.
+    expect(screen.getAllByText("Sample")).toHaveLength(2);
+  });
 });
