@@ -24,7 +24,7 @@ function RequestsPage() {
     defaultValues: { resourceType: "", workspaceId: 101 },
   });
 
-  const { data: requests = [], isPending, isError } = useQuery<ApiRequest[]>({
+  const { data: requests = [], isPending, isError, error } = useQuery<ApiRequest[]>({
     queryKey: ["requests"],
     queryFn: fetchRequests,
   });
@@ -65,7 +65,7 @@ function RequestsPage() {
     return (
       <div className="rounded-xl bg-red-50 p-6 border border-red-100 text-red-700 dark:bg-red-900/20 dark:border-red-800/30">
         <h3 className="font-semibold text-lg mb-2">Error Loading Requests</h3>
-        <p>Could not connect to the API. Is json-server running?</p>
+        <p>{error.message}</p>
       </div>
     );
   }
