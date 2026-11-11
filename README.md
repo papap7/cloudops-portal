@@ -120,4 +120,4 @@ Vitest tests, each beside the file it tests:
 
 ## 🤖 AI assistance
 
-Parts of this project were built with help from Claude (Anthropic's AI assistant), which is why it appears under Contributors on the commits it co-authored.
+I used Claude (Anthropic's AI assistant) as a reviewer and pair programmer on parts of this project, which is why it appears under Contributors on the commits it co-authored.
