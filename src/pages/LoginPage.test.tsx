@@ -20,6 +20,7 @@ function renderLoginPage() {
 
 afterEach(() => {
   vi.restoreAllMocks();
+  vi.unstubAllEnvs();
 });
 
 describe("LoginPage", () => {
@@ -56,5 +57,34 @@ describe("LoginPage", () => {
       screen.queryByText("Please enter a valid email address."),
     ).not.toBeInTheDocument();
     expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it("hides the demo button when no demo account is configured", () => {
+    renderLoginPage();
+
+    expect(
+      screen.queryByRole("button", { name: "Use demo account" }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("signs in with the configured demo account", async () => {
+    vi.stubEnv("VITE_DEMO_EMAIL", "demo@cloudops.dev");
+    vi.stubEnv("VITE_DEMO_PASSWORD", "demo-password-123");
+    // Stub fetch so the test never leaves the machine.
+    const fetchSpy = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValue(new Response(JSON.stringify({ message: "nope" }), { status: 401 }));
+    const user = userEvent.setup();
+    renderLoginPage();
+
+    await user.click(screen.getByRole("button", { name: "Use demo account" }));
+
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+    const [url, init] = fetchSpy.mock.calls[0];
+    expect(String(url)).toMatch(/\/api\/auth\/login$/);
+    expect(JSON.parse(String(init?.body))).toEqual({
+      email: "demo@cloudops.dev",
+      password: "demo-password-123",
+    });
   });
 });

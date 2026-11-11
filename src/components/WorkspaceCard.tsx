@@ -1,4 +1,5 @@
 import type { ApiWorkspace } from "../types/index";
+import { formatDate } from "../lib/formatDate";
 
 interface WorkspaceCardProps {
   workspace: ApiWorkspace;
@@ -20,7 +21,7 @@ function WorkspaceCard({ workspace, variant = "default" }: WorkspaceCardProps) {
       )}
       
       <small className="block mt-2 text-gray-500 dark:text-gray-400">
-        Created: {workspace.createdAt}
+        Created: {formatDate(workspace.createdAt)}
       </small>
     </div>
   );
