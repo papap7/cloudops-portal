@@ -12,6 +12,16 @@ import { fetchWorkspaces, fetchRequests } from "../api/client";
 import useAuthStore from "../store/authStore";
 import { formatDate } from "../lib/formatDate";
 
+// A small label for numbers and lists that are sample data, so nobody
+// reads them as a real team or real infrastructure.
+function SampleTag() {
+  return (
+    <span className="ml-2 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+      Sample
+    </span>
+  );
+}
+
 // Shown in a metric card while its number is loading.
 function MetricSkeleton() {
   return (
@@ -70,6 +80,15 @@ function DashboardPage() {
         </div>
       </div>
 
+      {/* What this demo is, in one line, before anyone has to ask. */}
+      <p
+        role="note"
+        className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-900/50 dark:bg-amber-900/20 dark:text-amber-200"
+      >
+        Demo project: the workspaces and the team list are sample data. Provision
+        requests are saved to the database, but nothing is created in a real cloud account.
+      </p>
+
       {/* Metrics Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
@@ -81,7 +100,7 @@ function DashboardPage() {
           )}
         </div>
         <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-          <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Active Engineers</h3>
+          <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Team Members<SampleTag /></h3>
           <p className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">{mockEngineers.length}</p>
         </div>
         <div className="rounded-xl border border-blue-200 bg-blue-50 p-6 shadow-sm dark:border-blue-900/50 dark:bg-blue-900/20">
@@ -149,7 +168,7 @@ function DashboardPage() {
           
           <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900 overflow-hidden">
             <div className="border-b border-gray-200 bg-gray-50 px-6 py-4 dark:border-gray-800 dark:bg-gray-800/50">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Engineering Team</h2>
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Engineering Team<SampleTag /></h2>
             </div>
             <div className="p-6 space-y-4">
               {mockEngineers.map(eng => (
