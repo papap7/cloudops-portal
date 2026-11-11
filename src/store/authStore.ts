@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { isTokenExpired } from "../lib/tokenExpiry";
 
 interface AuthState {
   token: string | null;
@@ -22,6 +23,15 @@ const useAuthStore = create<AuthState>()(
         token: state.token,
         userName: state.userName,
       }),
+      // localStorage keeps the token after the tab closes, but the token
+      // itself expires after 2 hours. Someone returning the next day
+      // should arrive signed out, not "signed in" with a token the API
+      // will refuse.
+      onRehydrateStorage: () => (state) => {
+        if (state?.token && isTokenExpired(state.token)) {
+          state.logout();
+        }
+      },
     }
   )
 );

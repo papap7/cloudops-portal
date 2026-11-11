@@ -21,6 +21,16 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
     },
   });
 
+  // 401 on a request that carried a token means the server no longer
+  // accepts it (expired, or signed with an old secret). Sign out, so the
+  // route guard sends the user to the login page instead of leaving them
+  // "signed in" on a page that can only show errors. Login and register
+  // are excluded: there, 401 means a wrong password, not a dead session.
+  if (res.status === 401 && token && !path.startsWith("/api/auth/")) {
+    useAuthStore.getState().logout();
+    throw new Error("Your session has expired. Please log in again.");
+  }
+
   if (!res.ok) {
     const body = await res.json().catch(() => null);
     throw new Error(body?.message ?? `Request failed (${res.status})`);
